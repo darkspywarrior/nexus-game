@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Neon Gaming App - Capstone Replica</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <style>
+    @import "https://unpkg.com/open-props" layer(design.system);
+    @import "https://unpkg.com/open-props/normalize.min.css" layer(demo.support);
+
+    /* Base Styles */
+    body {
+      background: #121624;
+      color: #e5e5f7;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 120px;
+      background: rgba(18, 22, 36, 0.95);
+      padding: 20px 10px;
+      box-shadow: 0 0 20px #9600ff66;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .sidebar .logo {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+
+    .blue-ball, .red-ball {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .blue-ball {
+      background: #3a54f8;
+      color: #3a54f8;
+    }
+
+    .red-ball {
+      background: #ff44d7;
+      color: #ff44d7;
+    }
+
+    .sidebar a {
+      color: #7e5fff;
+      text-decoration: none;
+      font-size: 1.1em;
+      margin: 15px 0;
+      text-shadow: 0 0 5px #f700ff;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .sidebar a:hover {
+      color: #ff44d7;
+    }
+
+    .sidebar .active {
+      color: #ff44d7;
+    }
+
+    .sidebar .bottom-links {
+      margin-top: auto;
+    }
+
+    /* Main Content */
+    main {
+      margin-left: 140px;
+      padding: 20px;
+      width: calc(100% - 140px);
+    }
+
+    /* Top Bar for Feed */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .top-bar h1 {
+      font-size: 2.5em;
+      color: #80ccff;
+      text-shadow: 0 0 10px #4022af60;
+    }
+
+    .top-bar .status {
+      color: #67ffad;
+      font-size: 1em;
+      margin-left: 10px;
+    }
+
+    .top-bar button {
+      background: transparent;
+      border: none;
+      color: #e5e7fa;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+
+    .top-bar .create-btn {
+      background: #7e5fff;
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      box-shadow: 0 0 10px #f700ff66;
+      transition: background 0.2s;
+    }
+
+    .top-bar .create-btn:hover {
+      background: #ff44d7;
+    }
+
+    /* Search Bar */
+    .search-bar {
+      background: #161c33;
+      border-radius: 20px;
+      padding: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 0 10px #393de7;
+    }
+
+    .search-bar input {
+      background: transparent;
+      border: none;
+      color: #e5e7fa;
+      flex: 1;
+      font-size: 1em;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filters button {
+      background: #282c43;
+      color: #e5e7fa;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #7e5fff43;
+      transition: background 0.2s;
+    }
+
+    .filters button.active {
+      background: #ff44d7;
+      color: #fff;
+    }
+
+    /* Feed Posts */
+    .feed-post {
+      background: #161c33;
+      border-radius: 20px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px #f7d3ff33;
+      border: 2px solid #393de7;
+      transition: border-color 0.2s;
+    }
+
+    .feed-post:hover {
+      border-color: #ff44d7;
+    }
+
+    .feed-post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .feed-post-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #f700ff66;
+      object-fit: cover;
+    }
+
+    .feed-post-info {
+      margin-left: 10px;
+    }
+
+    .feed-post-title {
+      font-size: 1.1em;
+      color: #42c0ff;
+    }
+
+    .feed-post-game {
+      font-size: 0.9em;
+      color: #fcc3fc;
+    }
+
+    .feed-post-desc {
+      font-size: 1em;
+      color: #e5e7fa;
+      margin-bottom: 10px;
+    }
+
+    .feed-post-meta {
+      font-size: 0.85em;
+      color: #a0a0a0;
+    }
+
+    .feed-post-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .feed-post-actions button {
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .apply-btn {
+      background: #7e5fff;
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 10px #f700ff66;
+    }
+
+    .apply-btn:hover {
+      background: #ff44d7;
+    }
+
+    .pass-btn {
+      background: #282c43;
+      color: #e5e7fa;
+      border: none;
+      box-shadow: 0 0 5px #7e5fff43;
+    }
+
+    .pass-btn:hover {
+      background: #a00010;
+    }
+
+    /* Random Pairing Button */
+    .random-pair-btn {
+      background: linear-gradient(90deg,#f700ff 30%,#9f73ff 80%);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 15px #7e5fff43;
+      margin: 20px auto;
+      display: block;
+      transition: background 0.2s;
+    }
+
+    .random-pair-btn:hover {
+      background: linear-gradient(90deg,#67ffad,#19d7ff 70%);
+    }
+
+    /* Tournament Carousel - Horizontal Moving Cards */
+    .top-carousel-wrapper {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    .top-carousel {
+      display: flex;
+      transition: transform 0.5s ease;
+      height: 100%;
+    }
+
+    .top-card {
+      flex: 0 0 180px;
+      height: 250px;
+      background: #161c33;
+      border-radius: 20px;
+      box-shadow: 0 0 15px #f7d3ff33;
+      border: 2px solid #393de7;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7fa;
+      margin: 0 10px;
+      transition: all 0.5s ease;
+    }
+
+    .top-card.center {
+      transform: scale(1.2);
+      box-shadow: 0 0 30px #ff44d7aa;
+      border-color: #ff44d7;
+      z-index: 10;
+    }
+
+    .top-card img {
+      width: 100%;
+      height: 80%;
+      object-fit: cover;
+      border-bottom: 2px solid #0ef;
+    }
+
+    .top-card .title {
+      font-size: 1em;
+      color: #42c0ff;
+      margin-top: 10px;
+      text-shadow: 0 0 5px #4022af;
+    }
+
+    /* Arrow Bars */
+    .arrow-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 23;
+      background: rgba(30,35,64,0.93);
+      border-radius: 30px;
+      width: 54px;
+      height: 80px;
+      box-shadow: 0 0 24px #9600ff66;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.2s;
+    }
+
+    .arrow-bar:hover {
+      background: #282c43;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .arrow-bar.left { left: 0; }
+    .arrow-bar.right { right: 0; }
+    .arrow-bar svg {
+      width: 36px;
+      height: 36px;
+      fill: #7e5fff;
+      filter: drop-shadow(0 0 8px #f700ffdd);
+    }
+
+    /* Match Requests */
+    .match-requests {
+      margin-bottom: 40px;
+    }
+
+    .carousel-wrapper {
+      margin: 20px auto;
+      max-width: 800px;
+      position: relative;
+      padding: 10px 90px;
+      background: linear-gradient(90deg,#261043 20%,#1a1b2b 80%);
+      border-radius: 38px;
+      box-shadow: 0 0 36px #7e5fff55, 0 0 6px #3a54f8;
+      overflow: hidden;
+    }
+
+    .match-carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      gap: 30px;
+      padding-bottom: 12px;
+    }
+
+    .match-card {
+      background: #161c33;
+      border-radius: 26px;
+      box-shadow: 0 0 19px #f7d3ff33;
+      min-width: 240px;
+      max-width: 240px;
+      padding: 26px 18px 21px 18px;
+      text-align: center;
+      color: #e5e7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      border: 3px solid #393de7;
+      transition: border-color .2s, transform 0.3s;
+    }
+
+    .match-card:hover {
+      border-color: #ff44d7;
+      transform: scale(1.05);
+    }
+
+    .match-card img {
+      width: 130px;
+      border-radius: 13px;
+      margin-bottom: 19px;
+      box-shadow: 0 0 15px #ac7cff88;
+      border: 3px solid #0ef;
+    }
+
+    .match-title {
+      font-size: 1.13em;
+      font-weight: 600;
+      color: #42c0ff;
+      margin-bottom: 3px;
+    }
+
+    .match-desc { font-size: 1em; margin-bottom: 9px; }
+    .match-details { font-size: 0.92em; color: #fcc3fc; margin-bottom: 7px; }
+    .accept-btn, .decline-btn, .accepted-btn {
+      font-size: 1em;
+      margin: 5px 9px 0 0;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 21px;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(90deg,#f700ff 30%,#9f73ff 80%);
+      color: #fff;
+      box-shadow: 0 2px 8px #7e5fff43;
+      transition: background .18s;
+    }
+    .accept-btn:hover { background: linear-gradient(90deg,#67ffad,#19d7ff 70%) }
+    .decline-btn {
+      background: linear-gradient(90deg,#444,#a0a0a0 80%);
+      color: #fff;
+    }
+    .decline-btn:hover { background: linear-gradient(90deg,#a00010,#444) }
+    .accepted-btn {
+      background: #67ffad;
+      color: #fff;
+    }
+    .accepted-btn:hover { background: #19d7ff }
+    ::-webkit-scrollbar { height: 8px; background: #19182a;}
+    ::-webkit-scrollbar-thumb {background: #6442cc;border-radius:9px;}
+
+    /* Live Matches */
+    .live-matches {
+      margin-bottom: 60px; /* ✅ ADDED 60px PROFESSIONAL SPACING */
+    }
+
+    .live-match-card {
+      background: #161c33;
+      border-radius: 26px;
+      box-shadow: 0 0 19px #f7d3ff33;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 3px solid #393de7;
+      transition: border-color .2s, transform 0.3s;
+    }
+
+    .live-match-card:hover {
+      border-color: #ff44d7;
+      transform: scale(1.02);
+    }
+
+    .live-match-title {
+      font-size: 1.1em;
+      color: #42c0ff;
+    }
+
+    .live-match-desc {
+      color: #fcc3fc;
+      font-size: 0.95em;
+    }
+
+    .play-btn {
+      background: linear-gradient(90deg,#f700ff 30%,#9f73ff 80%);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #7e5fff43;
+    }
+
+    /* Games - Bloom Effect */
+    @keyframes slide-in {
+      from {
+        scale: .85;
+        rotate: calc((var(--side, 1) * (5deg * var(--amp, 1))));
+        opacity: 0.5;
+      }
+      to {
+        scale: 1;
+        rotate: 0;
+        opacity: 1;
+      }
+    }
+
+    .games {
+      margin-top: 60px; /* ✅ ADDED 60px PROFESSIONAL SPACING */
+      margin-bottom: 60px; /* ✅ ADDED 60px PROFESSIONAL SPACING */
+      --cols: 2;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), minmax(0, var(--size-content-1)));
+      gap: var(--size-5);
+      padding: var(--size-5);
+      place-items: start;
+
+      @media (width >= 720px) { --cols: 4 }
+      @media (width >= 1200px) { --cols: 6 }
+      @media (width >= 1920px) { --cols: 8 }
+
+      & > .card-animation-layer {
+        display: grid;
+        gap: var(--size-2);
+        cursor: pointer;
+
+        &:nth-of-type(2n + 1) { transform-origin: 25vw 100%; --side: -1; }
+        &:nth-of-type(2n) { transform-origin: -25vw 100%; --side: 1; }
+
+        @media (width >= 720px) {
+          &:nth-of-type(4n + 1) { transform-origin: 50vw 100%; --side: -1; --amp: 2; }
+          &:nth-of-type(4n + 2) { transform-origin: 25vw 100%; --side: -1; }
+          &:nth-of-type(4n + 3) { transform-origin: -25vw 100%; --side: 1 }
+          &:nth-of-type(4n) { transform-origin: -50vw 100%; --side: 1; --amp: 2; }
+        }
+
+        @media (width >= 1200px) {
+          &:nth-of-type(6n + 1) { transform-origin: 75vw 100%; --side: -1; --amp: 3; }
+          &:nth-of-type(6n + 2) { transform-origin: 50vw 100%; --side: -1; --amp: 2; }
+          &:nth-of-type(6n + 3) { transform-origin: 25vw 100%; --side: -1; }
+          &:nth-of-type(6n + 4) { transform-origin: -25vw 100%; --side: 1; }
+          &:nth-of-type(6n + 5) { transform-origin: -50vw 100%; --side: 1; --amp: 2; }
+          &:nth-of-type(6n) { transform-origin: -75vw 100%; --side: 1; --amp: 3; }
+        }
+
+        @media (width >= 1920px) {
+          &:nth-of-type(8n + 1) { transform-origin: 100vw 100%; --side: -1; --amp: 4; }
+          &:nth-of-type(8n + 2) { transform-origin: 75vw 100%; --side: -1; --amp: 3; }
+          &:nth-of-type(8n + 3) { transform-origin: 50vw 100%; --side: -1; --amp: 2; }
+          &:nth-of-type(8n + 4) { transform-origin: 25vw 100%; --side: -1; }
+          &:nth-of-type(8n + 5) { transform-origin: -25vw 100%; --side: 1; }
+          &:nth-of-type(8n + 6) { transform-origin: -50vw 100%; --side: 1; --amp: 2; }
+          &:nth-of-type(8n + 7) { transform-origin: -75vw 100%; --side: 1; --amp: 3; }
+          &:nth-of-type(8n) { transform-origin: -100vw 100%; --side: 1; --amp: 4; }
+        }
+      }
+    }
+
+    .game-card {
+      background: var(--surface-2);
+      border: 1px solid color-mix(in srgb, var(--surface-4), #0000 50%);
+      padding-block: var(--size-3) var(--size-2);
+      padding-inline: var(--size-3);
+      border-radius: var(--radius-4);
+      box-shadow: var(--shadow-4);
+      transition: transform 0.2s;
+
+      &.landscape img { aspect-ratio: var(--ratio-landscape) }
+      &.portrait img { aspect-ratio: var(--ratio-portrait) }
+      &.square img { aspect-ratio: var(--ratio-square) }
+
+      & > p {
+        color: var(--text-2);
+        line-clamp: 2;
+      }
+
+      & > :is(a, p) {
+        font-size: var(--font-size-1);
+        line-height: 1.25;
+      }
+
+      img {
+        background-color: var(--surface-3);
+        border-radius: var(--radius-3);
+        margin-block-end: var(--size-2);
+      }
+
+      @media (prefers-color-scheme: light) {
+        background: white;
+      }
+    }
+
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+
+    .game-title {
+      max-inline-size: 100%;
+      text-align: center;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: view()) {
+        .card-animation-layer {
+          animation: slide-in 0.5s ease-out both;
+          animation-timeline: view();
+          animation-range: entry 0% cover 50%;
+        }
+      }
+    }
+
+    /* Random Pair Box */
+    .random-pair-box {
+      background: #161c33;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 40px auto; /* ✅ CHANGED TO 40px TOP/BOTTOM FOR PROFESSIONAL SPACING */
+      box-shadow: 0 0 15px #f7d3ff33;
+      border: 2px solid #393de7;
+      max-width: 300px;
+      align-self: flex-start;
+    }
+
+    .random-pair-box h3 {
+      color: #80ccff;
+      margin-bottom: 15px;
+    }
+
+    .random-pair-box select {
+      background: #282c43;
+      color: #e5e7fa;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .random-pair-box button {
+      background: #7e5fff;
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      box-shadow: 0 0 10px #f700ff66;
+      border: none;
+      cursor: pointer;
+    }
+
+    .random-pair-box button:hover {
+      background: #ff44d7;
+    }
+
+    /* Messages Section */
+    .messages-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .message-card {
+      background: #161c33;
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 0 15px #f7d3ff33;
+      border: 2px solid #393de7;
+      transition: border-color 0.2s;
+    }
+
+    .message-card:hover {
+      border-color: #ff44d7;
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #f700ff66;
+      object-fit: cover;
+    }
+
+    .message-info {
+      margin-left: 10px;
+    }
+
+    .message-sender {
+      font-size: 1.1em;
+      color: #42c0ff;
+    }
+
+    .message-time {
+      font-size: 0.85em;
+      color: #a0a0a0;
+      margin-left: auto;
+    }
+
+    .message-content {
+      font-size: 1em;
+      color: #e5e7fa;
+      margin-bottom: 10px;
+    }
+
+    .reply-btn {
+      background: #282c43;
+      color: #e5e7fa;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #7e5fff43;
+    }
+
+    .reply-btn:hover {
+      background: #ff44d7;
+      color: #fff;
+    }
+
+    /* Connections Section */
+    .connections-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .connection-card {
+      background: #161c33;
+      border-radius: 20px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 0 15px #f7d3ff33;
+      border: 2px solid #393de7;
+      transition: border-color 0.2s, transform 0.3s;
+    }
+
+    .connection-card:hover {
+      border-color: #ff44d7;
+      transform: scale(1.05);
+    }
+
+    .connection-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #f700ff66;
+      margin: 0 auto 10px;
+      object-fit: cover;
+    }
+
+    .connection-name {
+      font-size: 1.1em;
+      color: #42c0ff;
+    }
+
+    .connection-status {
+      font-size: 0.9em;
+      color: #fcc3fc;
+    }
+
+    .connection-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .connection-actions button {
+      background: #282c43;
+      color: #e5e7fa;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #7e5fff43;
+      margin: 0;
+    }
+
+    .connection-actions button:hover {
+      background: #ff44d7;
+      color: #fff;
+    }
+
+    /* Profile Section */
+    .profile-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #241a44;
+      box-shadow: 0 0 15px 3px #36006cff;
+      border-radius: 14px;
+      padding: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .profile-stats {
+      flex: 1 1 200px;
+      background: #362d59;
+      border-radius: 12px;
+      padding: 16px;
+      min-width: 200px;
+      color: #6af9c4;
+    }
+
+    .profile-stats h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #54ccb3;
+      padding-bottom: 7px;
+    }
+
+    .profile-stats .stat {
+      font-size: 1.1em;
+      margin: 10px 0;
+    }
+
+    .profile-stats img {
+      width: 100%;
+      border-radius: 50%;
+      border: 3px solid #4dbda9;
+      margin-bottom: 16px;
+      object-fit: cover;
+    }
+
+    .match-requests {
+      flex: 1 1 400px;
+      background: #291d57;
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 400px;
+      color: #d2bdf4;
+    }
+
+    .match-requests h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      color: #caa2ff;
+      border-bottom: 2px solid #bda9f7;
+      padding-bottom: 8px;
+    }
+
+    .challenge {
+      background: #3e2d71;
+      padding: 15px;
+      border-radius: 14px;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      min-height: 120px;
+      overflow-y: auto;
+      color: #faf6ff;
+      box-shadow: inset 0 0 15px #a27afb;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 26px;
+      justify-content: flex-start;
+    }
+
+    .btn {
+      padding: 12px 32px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.1em;
+      transition: background-color 0.25s ease;
+      color: white;
+      box-shadow: 0 0 14px #9d81e9;
+    }
+
+    .btn.accept {
+      background-color: #7a54ff;
+    }
+
+    .btn.accept:hover {
+      background-color: #b491ff;
+    }
+
+    .btn.decline {
+      background-color: #9f486f;
+    }
+
+    .btn.decline:hover {
+      background-color: #cf71a4;
+    }
+
+    .card-tiers {
+      flex: 1 1 160px;
+      background: #3c2c5b;
+      border-radius: 12px;
+      padding: 18px;
+      color: #f7ecff;
+      min-width: 160px;
+    }
+
+    .card-tiers h3 {
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-weight: 700;
+      font-size: 1.1em;
+      color: #ecd3ff;
+      border-bottom: 2px solid #7644cc;
+      padding-bottom: 7px;
+    }
+
+    .tier-item {
+      margin-bottom: 12px;
+      font-size: 1.05em;
+      padding: 10px;
+      background-color: #5b4785;
+      border-radius: 8px;
+      box-shadow: 0 0 7px #9b78ff;
+    }
+
+    .applied-matches, .created-requests {
+      flex: 1 1 400px;
+      background: #291d57;
+      border-radius: 12px;
+      padding: 18px;
+      color: #d2bdf4;
+      min-width: 400px;
+    }
+
+    .applied-matches h3, .created-requests h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      color: #caa2ff;
+      border-bottom: 2px solid #bda9f7;
+      padding-bottom: 8px;
+    }
+
+    .applied-matches .match-list, .created-requests .request-list {
+      background: #3e2d71;
+      padding: 15px;
+      border-radius: 14px;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      min-height: 120px;
+      overflow-y: auto;
+      color: #faf6ff;
+      box-shadow: inset 0 0 15px #a27afb;
+    }
+
+    .challenge::-webkit-scrollbar, .applied-matches .match-list::-webkit-scrollbar, .created-requests .request-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .challenge::-webkit-scrollbar-thumb, .applied-matches .match-list::-webkit-scrollbar-thumb, .created-requests .request-list::-webkit-scrollbar-thumb {
+      background-color: #8e68f9;
+      border-radius: 8px;
+    }
+
+    /* Settings Section */
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .setting-item {
+      background: #161c33;
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 0 15px #f7d3ff33;
+      border: 2px solid #393de7;
+      transition: border-color 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .setting-item:hover {
+      border-color: #ff44d7;
+    }
+
+    .setting-label {
+      font-size: 1.1em;
+      color: #42c0ff;
+    }
+
+    .setting-control {
+      background: #282c43;
+      color: #e5e7fa;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #7e5fff43;
+    }
+
+    /* Discover Players */
+    .discover-players {
+      margin-bottom: 40px;
+    }
+
+    .discover-players h2 {
+      margin-bottom: 40px; /* ADDED SPACE BETWEEN TITLE AND SEARCH BAR */
+    }
+
+    .players-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .player-card {
+      background: #161c33;
+      border-radius: 20px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 0 15px #f7d3ff33;
+      border: 2px solid #393de7;
+      transition: border-color 0.2s, transform 0.3s;
+    }
+
+    .player-card:hover {
+      border-color: #ff44d7;
+      transform: scale(1.05);
+    }
+
+    .player-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #f700ff66;
+      margin: 0 auto 10px;
+      object-fit: cover;
+    }
+
+    .player-name {
+      font-size: 1.1em;
+      color: #42c0ff;
+    }
+
+    .player-location {
+      font-size: 0.9em;
+      color: #a0a0a0;
+    }
+
+    .player-desc {
+      font-size: 0.95em;
+      color: #e5e7fa;
+      margin: 5px 0;
+    }
+
+    .player-games {
+      font-size: 0.85em;
+      color: #fcc3fc;
+      margin-bottom: 10px;
+    }
+
+    .view-profile-btn {
+      background: #7e5fff;
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      box-shadow: 0 0 10px #f700ff66;
+      border: none;
+      cursor: pointer;
+    }
+
+    .view-profile-btn:hover {
+      background: #ff44d7;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      .sidebar {
+        width: 80px;
+      }
+      main {
+        margin-left: 100px;
+        width: calc(100% - 100px);
+      }
+      .carousel-wrapper {
+        max-width: 98vw;
+        padding: 7px 38px;
+      }
+      .match-card {
+        min-width: 210px;
+        max-width: 210px;
+      }
+      .arrow-bar {
+        width: 36px;
+        height: 52px;
+      }
+      .top-carousel-wrapper {
+        width: 100%;
+      }
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+      padding-top: 20px;
+    }
+
+    .modal-content {
+      background-color: #161c33;
+      margin: 2% auto;
+      border: 2px solid #393de7;
+      width: 95%;
+      max-width: 1000px;
+      max-height: 90vh;
+      padding: 0;
+      border-radius: 20px;
+      animation: fadeIn 0.3s;
+      display: flex;
+      overflow: hidden;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.9);}
+      to {opacity: 1; transform: scale(1);}
+    }
+
+    .close {
+      position: absolute;
+      right: 25px;
+      top: 15px;
+      color: #ff44d7;
+      font-size: 35px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .close:hover {
+      color: #fff;
+    }
+
+    /* PROFILE MODAL SPECIFIC STYLES */
+    .profile-modal-container {
+      max-width: 1000px;
+      background-color: #241a44;
+      box-shadow: 0 0 30px 5px #36006cff;
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      overflow-y: auto;
+      height: 90vh;
+    }
+
+    .profile-modal-stats {
+      flex: 1 1 250px;
+      background: #362d59;
+      border-radius: 15px;
+      padding: 20px;
+      min-width: 250px;
+      color: #6af9c4;
+      text-align: center;
+    }
+
+    .profile-modal-stats img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #4dbda9;
+      margin: 0 auto 20px;
+      object-fit: cover;
+      box-shadow: 0 0 20px #4dbda9;
+    }
+
+    .profile-modal-stats h2 {
+      color: #6af9c4;
+      margin: 0 0 15px;
+      font-size: 1.8em;
+      text-shadow: 0 0 10px #4dbda9;
+    }
+
+    .profile-modal-stats h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #54ccb3;
+      padding-bottom: 10px;
+      color: #80ccff;
+    }
+
+    .profile-modal-stats .stat {
+      font-size: 1.2em;
+      margin: 15px 0;
+      padding: 10px;
+      background: rgba(84, 204, 179, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid #54ccb3;
+    }
+
+    .profile-modal-match-requests {
+      flex: 2 1 400px;
+      background: #291d57;
+      border-radius: 15px;
+      padding: 25px;
+      color: #d2bdf4;
+      min-width: 350px;
+    }
+
+    .profile-modal-match-requests h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #caa2ff;
+      border-bottom: 2px solid #bda9f7;
+      padding-bottom: 10px;
+    }
+
+    .profile-modal-challenge {
+      background: #3e2d71;
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 1.1em;
+      margin-bottom: 25px;
+      min-height: 150px;
+      overflow-y: auto;
+      color: #faf6ff;
+      box-shadow: inset 0 0 20px #a27afb;
+      line-height: 1.6;
+    }
+
+    .profile-modal-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .profile-modal-btn {
+      padding: 12px 25px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      color: white;
+      box-shadow: 0 0 15px #9d81e9;
+      min-width: 120px;
+    }
+
+    .profile-modal-btn.accept {
+      background-color: #7a54ff;
+    }
+
+    .profile-modal-btn.accept:hover {
+      background-color: #b491ff;
+      transform: translateY(-2px);
+    }
+
+    .profile-modal-btn.decline {
+      background-color: #9f486f;
+    }
+
+    .profile-modal-btn.decline:hover {
+      background-color: #cf71a4;
+      transform: translateY(-2px);
+    }
+
+    .profile-modal-btn.message {
+      background: linear-gradient(90deg, #f700ff, #9f73ff);
+    }
+
+    .profile-modal-btn.message:hover {
+      background: linear-gradient(90deg, #ff44d7, #7e5fff);
+    }
+
+    .profile-modal-card-tiers {
+      flex: 1 1 200px;
+      background: #3c2c5b;
+      border-radius: 15px;
+      padding: 20px;
+      color: #f7ecff;
+      min-width: 200px;
+    }
+
+    .profile-modal-card-tiers h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 1.2em;
+      color: #ecd3ff;
+      border-bottom: 2px solid #7644cc;
+      padding-bottom: 10px;
+    }
+
+    .profile-modal-tier-item {
+      margin-bottom: 15px;
+      font-size: 1.1em;
+      padding: 12px;
+      background-color: #5b4785;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #9b78ff;
+      text-align: center;
+    }
+
+    .profile-modal-about {
+      flex: 1 1 300px;
+      background: #2a1e4e;
+      border-radius: 15px;
+      padding: 20px;
+      color: #e5e7fa;
+    }
+
+    .profile-modal-about h3 {
+      color: #80ccff;
+      border-bottom: 2px solid #7e5fff;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .profile-modal-games {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .profile-modal-game-tag {
+      background: #3a2d5e;
+      color: #fcc3fc;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 0.9em;
+      border: 1px solid #7e5fff;
+    }
+
+    .modal label {
+      color: #e5e7fa;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .modal select, .modal input, .modal textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      background: #282c43;
+      border: none;
+      border-radius: 5px;
+      color: #e5e7fa;
+      box-shadow: 0 0 5px #7e5fff43;
+      transition: box-shadow 0.3s;
+    }
+
+    .modal select:focus, .modal input:focus, .modal textarea:focus {
+      box-shadow: 0 0 10px #ff44d7;
+    }
+
+    .modal button {
+      background: #7e5fff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      margin-right: 10px;
+    }
+
+    .modal button:hover {
+      background: #ff44d7;
+      transform: scale(1.05);
+    }
+
+    .modal .cancel-btn {
+      background: #282c43;
+      margin-left: 10px;
+    }
+
+    .modal .cancel-btn:hover {
+      background: #a00010;
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="blue-ball"></div>
+      <div class="red-ball"></div>
+    </div>
+    <a href="#discover" class="active"> Discover</a>
+    <a href="#feed"> Feed</a>
+    <a href="#connections"> Connections</a>
+    <a href="#messages">Messages</a>
+    <div class="bottom-links">
+      <a href="#profile">👤 Profile</a>
+      <a href="#settings">⚙️ Settings</a>
+      <a href="#logout">🚪 Logout</a>
+    </div>
+  </nav>
+
+  <main id="discover" style="display: block;">
+    <!-- Tournaments -->
+    <section class="top-carousel-wrapper">
+      <h2 style="text-align:left;font-size:1.5em;color:#80ccff;text-shadow:0 0 22px #4022af60;">Tournaments</h2>
+      <div class="top-carousel" id="top-carousel">
+        <!-- Cards by JS -->
+      </div>
+      <div class="arrow-bar left" onclick="moveTopCarousel(-1)">
+        <svg><polyline points="28,8 10,24 28,40" stroke="#e6e6fa" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="arrow-bar right" onclick="moveTopCarousel(1)">
+        <svg><polyline points="12,8 30,24 12,40" stroke="#e6e6fa" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </section>
+
+    <!-- Match Requests -->
+    <section class="match-requests">
+      <h2 style="text-align:center;font-size:2em;color:#80ccff;text-shadow:0 0 22px #4022af60;">Match Requests</h2>
+      <div class="carousel-wrapper">
+        <div class="arrow-bar left" onclick="moveMatchCarousel(-1)">
+          <svg><polyline points="28,8 10,24 28,40" stroke="#e6e6fa" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="match-carousel" id="match-carousel">
+          <!-- Cards -->
+        </div>
+        <div class="arrow-bar right" onclick="moveMatchCarousel(1)">
+          <svg><polyline points="12,8 30,24 12,40" stroke="#e6e6fa" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Matches ✅ WITH PROFESSIONAL SPACING -->
+    <section class="live-matches">
+      <h2 style="text-align:center;font-size:2em;color:#80ccff;text-shadow:0 0 22px #4022af60;">Live Matches</h2>
+      <div class="live-match-card">
+        <div>
+          <div class="live-match-title">Team A vs. B</div>
+          <div class="live-match-desc">Fortress Assault - Streaming Now!</div>
+        </div>
+        <button class="play-btn">&#9654;</button>
+      </div>
+      <div class="live-match-card">
+        <div>
+          <div class="live-match-title">Solo Duel: Player X vs Y</div>
+          <div class="live-match-desc">Arena Battle - Live!</div>
+        </div>
+        <button class="play-btn">&#9654;</button>
+      </div>
+    </section>
+
+    <!-- Games ✅ WITH PROFESSIONAL SPACING -->
+    <section class="games">
+      <h2 style="text-align:center;font-size:2em;color:#80ccff;text-shadow:0 0 22px #4022af60;">Games</h2>
+      <!-- Bloom cards -->
+      <div class="random-pair-box">
+        <h3>Find Random Pair for Game</h3>
+        <select id="game-select-games">
+          <option>Select Game</option>
+          <option>League of Legends</option>
+          <option>Valorant</option>
+          <option>Fortnite</option>
+        </select>
+        <select id="skill-select-games">
+          <option>Select Skill Level</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+        <button onclick="findRandomPair('games')">Find Pair</button>
+      </div>
+    </section>
+
+    <!-- Discover Players -->
+    <section class="discover-players">
+      <h2 style="text-align:center;font-size:2em;color:#80ccff;text-shadow:0 0 22px #4022af60;">Discover Players</h2>
+      
+      <!-- ADDED 40px MARGIN FOR SPACE -->
+      <div style="margin-bottom: 40px;"></div>
+      
+      <div class="search-bar">
+        <span>&#128269;</span>
+        <input type="text" placeholder="Search players by name or gamertag..." oninput="searchPlayers(this.value)">
+      </div>
+      
+      <div class="filters">
+        <label> <select><option>All genders</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+        <label> <select><option>All languages</option><option>English</option><option>Spanish</option><option>French</option></select></label>
+        <label><select><option>All games</option><option>League of Legends</option><option>Valorant</option><option>Fortnite</option></select></label>
+        <label><select><option>Global</option><option>Local</option><option>Regional</option></select></label>
+      </div>
+      <div class="players-list">
+        <div class="player-card">
+          <img class="player-avatar" src="https://wallpapers.com/images/hd/anime-boy-gaming-629lqovs7liqxhhp.jpg" alt="Hhhh">
+          <div class="player-name">Hhhh</div>
+          <button class="view-profile-btn" onclick="openPlayerProfile('Hhhh', 'Anime Gamer', 'https://wallpapers.com/images/hd/anime-boy-gaming-629lqovs7liqxhhp.jpg')">View Profile</button>
+        </div>
+        <div class="player-card">
+          <img class="player-avatar" src="https://i.pinimg.com/736x/db/19/53/db1953271bae15b939947eb482418ca5.jpg" alt="vvv">
+          <div class="player-name">vvv</div>
+          <button class="view-profile-btn" onclick="openPlayerProfile('vvv', 'Casual Player', 'https://i.pinimg.com/736x/db/19/53/db1953271bae15b939947eb482418ca5.jpg')">View Profile</button>
+        </div>
+        <div class="player-card">
+          <img class="player-avatar" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/cca2b778-662e-421b-993f-3d9855b0fd3e/debovw3-11cf403d-3bef-43f3-9865-2a2d10ff8c65.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jY2EyYjc3OC02NjJlLTQyMWItOTkzZi0zZDk4NTViMGZkM2UvZGVib3Z3My0xMWNmNDAzZC0zYmVmLTQzZjMtOTg2NS0yYTJkMTBmZjhjNjUuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.cbXbVfFBSXaTWPLFRBNthxuJgLVRbif0ttPytnLHzTk" alt="lll">
+          <div class="player-name">lll</div>
+          <button class="view-profile-btn" onclick="openPlayerProfile('lll', 'Pro Gamer', 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/cca2b778-662e-421b-993f-3d9855b0fd3e/debovw3-11cf403d-3bef-43f3-9865-2a2d10ff8c65.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jY2EyYjc3OC02NjJlLTQyMWItOTkzZi0zZDk4NTViMGZkM2UvZGVib3Z3My0xMWNmNDAzZC0zYmVmLTQzZjMtOTg2NS0yYTJkMTBmZjhjNjUuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.cbXbVfFBSXaTWPLFRBNthxuJgLVRbif0ttPytnLHzTk')">View Profile</button>
+        </div>
+        <div class="player-card">
+          <img class="player-avatar" src="https://img.freepik.com/free-photo/aesthetic-anime-character-gaming_23-2151560701.jpg" alt="JordanPro">
+          <div class="player-name">JordanPro</div>
+          <div class="player-location">Seattle, WA</div>
+          <div class="player-desc">MOBA enthusiast and tournament organizer</div>
+          <div class="player-games">Dota 2 • League of Legends • Heroes of the Storm</div>
+          <button class="view-profile-btn" onclick="openPlayerProfile('JordanPro', 'Jordan Professional', 'https://img.freepik.com/free-photo/aesthetic-anime-character-gaming_23-2151560701.jpg')">View Profile</button>
+        </div>
+        <div class="player-card">
+          <img class="player-avatar" src="https://wallpapers.com/images/hd/gaming-profile-pictures-sip74wt5su5vkzgd.jpg" alt="SamTheSniper">
+          <div class="player-name">SamTheSniper</div>
+          <div class="player-location">Austin, TX</div>
+          <div class="player-desc">Casual gamer, loves team-based strategy games</div>
+          <div class="player-games">League of Legends • Overwatch 2 • Rocket League</div>
+          <button class="view-profile-btn" onclick="openPlayerProfile('SamTheSniper', 'Sam The Sniper', 'https://wallpapers.com/images/hd/gaming-profile-pictures-sip74wt5su5vkzgd.jpg')">View Profile</button>
+        </div>
+        <div class="player-card">
+          <img class="player-avatar" src="https://media.craiyon.com/2025-07-12/M81gqAv9Ra6wvvTNZeM1sQ.webp" alt="AlexGamer">
+          <div class="player-name">AlexGamer</div>
+          <div class="player-location">San Francisco, CA</div>
+          <div class="player-desc">Competitive FPS player looking for ranked teammates</div>
+          <div class="player-games">Valorant • CS2 • Apex Legends</div>
+          <button class="view-profile-btn" onclick="openPlayerProfile('AlexGamer', 'Alex Gamer Pro', 'https://media.craiyon.com/2025-07-12/M81gqAv9Ra6wvvTNZeM1sQ.webp')">View Profile</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main id="feed" style="display: none;">
+    <div class="top-bar">
+      <h1>Match Feed <span class="status">&#128267; Live</span></h1>
+      <div>
+        <button title="Hidden" onclick="toggleHide()">&#128065;&#8205;&#128488;</button>
+        <button title="Refresh" onclick="refreshFeed()">&#128260;</button>
+        <button class="create-btn" onclick="openCreateModal()">+ Create</button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <span>&#128269;</span>
+      <input type="text" placeholder="Search games, descriptions, or gamer tags..." oninput="searchFeed(this.value)">
+    </div>
+
+    <div class="filters">
+      <button onclick="filterFeed('all')">All</button>
+      <button onclick="filterFeed('teammates')">Looking for Teammates</button>
+      <button onclick="filterFeed('challenge')">Challenge</button>
+      <button onclick="filterFeed('squad')">Squad</button>
+    </div>
+
+    <div class="feed-posts" id="feed-posts">
+      <!-- Posts by JS -->
+    </div>
+
+    <button class="random-pair-btn" onclick="randomPairing()">Random Pairing</button>
+  </main>
+
+  <main id="connections" style="display: none;">
+    <h2 style="text-align:center;font-size:2em;color:#80ccff;text-shadow:0 0 22px #4022af60;">Connections</h2>
+    <div class="random-pair-box">
+      <h3>Find Random Pair</h3>
+      <select id="game-select-connections">
+        <option>Select Game</option>
+        <option>League of Legends</option>
+        <option>Valorant</option>
+        <option>Fortnite</option>
+      </select>
+      <select id="skill-select-connections">
+        <option>Select Skill Level</option>
+        <option>Beginner</option>
+        <option>Intermediate</option>
+        <option>Advanced</option>
+      </select>
+      <button onclick="findRandomPair('connections')">Find Pair</button>
+    </div>
+    <div class="connections-list">
+      <!-- Connection cards by JS -->
+    </div>
+  </main>
+
+  <main id="messages" style="display: none;">
+    <h2 style="text-align:center;font-size:2em;color:#80ccff;text-shadow:0 0 22px #4022af60;">Messages</h2>
+    <div class="messages-list">
+      <!-- Message cards by JS -->
+    </div>
+  </main>
+
+  <main id="profile" style="display: none;">
+    <div class="profile-container">
+      <div class="profile-stats">
+        <img id="profile-pic" src="https://wallpapers.com/images/hd/gaming-profile-pictures-tmjjc9v0w80azoeh.jpg" alt="Profile Picture" />
+        <h2 id="profile-name">Your Name</h2>
+        <button onclick="openEditProfileModal()" style="background: #7e5fff; color: #fff; padding: 8px 15px; border-radius: 20px; font-weight: bold; box-shadow: 0 0 10px #f700ff66; border: none; cursor: pointer; margin-bottom: 16px;">Edit Profile</button>
+        <h3>Player Stats</h3>
+        <div class="stat">Rank: <strong>#12</strong></div>
+        <div class="stat">Wins: <strong>45</strong></div>
+        <div class="stat">K/D: <strong>2.3</strong></div>
+        <div class="stat">XP: <strong>8900</strong></div>
+      </div>
+
+      <div class="match-requests">
+        <h3>Match Requests</h3>
+        <div class="challenge" id="challengeBox" tabindex="0">
+          New Challenge:<br />
+          <strong>Team Deathmatch</strong>
+        </div>
+        <div class="buttons">
+          <button class="btn accept" onclick="alert('Challenge Accepted')">Accept</button>
+          <button class="btn decline" onclick="alert('Challenge Declined')">Decline</button>
+        </div>
+      </div>
+
+      <div class="applied-matches">
+        <h3>Applied Matches</h3>
+        <div class="match-list" id="appliedMatchesList">
+          <!-- Applied matches will be populated by JS -->
+        </div>
+      </div>
+
+      <div class="created-requests">
+        <h3>Created Requests</h3>
+        <div class="request-list" id="createdRequestsList">
+          <!-- Created requests will be populated by JS -->
+        </div>
+      </div>
+
+      <div class="card-tiers">
+        <h3>Card Collection Tiers</h3>
+        <div class="tier-item">Bronze Tier: <strong>12/20</strong></div>
+        <div class="tier-item">Silver Tier: <strong>8/15</strong></div>
+        <div class="tier-item">Gold Tier: <strong>3/10</strong></div>
+      </div>
+    </div>
+  </main>
+
+  <main id="settings" style="display: none;">
+    <h2 style="text-align:center;font-size:2em;color:#80ccff;text-shadow:0 0 22px #4022af60;">Settings</h2>
+    <div class="settings-list">
+      <div class="setting-item">
+        <div class="setting-label">Dark Mode</div>
+        <button class="setting-control" onclick="toggleDarkMode()">Toggle</button>
+      </div>
+      <div class="setting-item">
+        <div class="setting-label">Notifications</div>
+        <button class="setting-control" onclick="toggleNotifications()">On</button>
+      </div>
+      <div class="setting-item">
+        <div class="setting-label">Privacy</div>
+        <button class="setting-control" onclick="togglePrivacy()">Public</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Create Post Modal -->
+  <div id="createPostModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCreateModal()">&times;</span>
+      <h2>Create Match Request</h2>
+      <form id="createPostForm">
+        <label for="game">Game</label>
+        <select id="game" required>
+          <option>Select a game</option>
+          <option>League of Legends</option>
+          <option>Valorant</option>
+          <option>Fortnite</option>
+        </select>
+
+        <label for="game-mode">Game Mode</label>
+        <select id="game-mode" required>
+          <option>Select mode</option>
+          <option>1v1</option>
+          <option>Squad</option>
+          <option>Team</option>
+        </select>
+
+        <label for="region">Region</label>
+        <select id="region" required>
+          <option>Select region</option>
+          <option>NA Central</option>
+          <option>Asia</option>
+          <option>EU West</option>
+          <option>Global</option>
+        </select>
+
+        <label for="tournament">Tournament (Optional)</label>
+        <input type="text" id="tournament" placeholder="e.g., Spring Championship">
+
+        <label for="description">Description</label>
+        <textarea id="description" placeholder="Describe what you're looking for, your skill level, requirements, etc." required></textarea>
+
+        <button type="submit">+ Create Match Request</button>
+        <button type="button" class="cancel-btn" onclick="closeCreateModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Compose Message Modal -->
+  <div id="composeMessageModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeComposeModal()">&times;</span>
+      <h2>Compose Message</h2>
+      <form id="composeMessageForm">
+        <label for="recipient">To</label>
+        <input type="text" id="recipient" readonly>
+        <label for="message">Message</label>
+        <textarea id="message" placeholder="Type your message..." required></textarea>
+        <button type="submit">Send</button>
+        <button type="button" class="cancel-btn" onclick="closeComposeModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="editProfileModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeEditProfileModal()">&times;</span>
+      <h2>Edit Profile</h2>
+      <form id="editProfileForm">
+        <label for="name">Name</label>
+        <input type="text" id="name" required>
+        <label for="pic-url">Profile Picture URL</label>
+        <input type="text" id="pic-url" required>
+        <button type="submit">Save</button>
+        <button type="button" class="cancel-btn" onclick="closeEditProfileModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PLAYER PROFILE MODAL -->
+  <div id="playerProfileModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closePlayerProfileModal()">&times;</span>
+      <div class="profile-modal-container" id="playerProfileContent">
+        <!-- Content populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"
+    const db = firebase.firestore();
+    const PANDASCORE_TOKEN = '11u6rkA4qpCfVkL58XIdcCSurvMrGtnDNkeJ2bAQkAYGUeje60w'; // Replace with your PandaScore API key
+
+    // RAWG Token (Insert your RAWG API key here)
+    const RAWG_KEY = '6d878d3ac32040708a104c05c5258ee6';
+    // Sidebar Navigation
+    const sidebarLinks = document.querySelectorAll('.sidebar a');
+    const sections = {
+      discover: document.getElementById('discover'),
+      feed: document.getElementById('feed'),
+      connections: document.getElementById('connections'),
+      messages: document.getElementById('messages'),
+      profile: document.getElementById('profile'),
+      settings: document.getElementById('settings')
+    };
+
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = link.href.split('#')[1];
+        if (target === 'logout') {
+          alert('Logging out...');
+          return;
+        }
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        Object.values(sections).forEach(sec => sec.style.display = 'none');
+        if (sections[target]) {
+          sections[target].style.display = 'block';
+        }
+      });
+    });
+
+    // Tournament Carousel Data
+    const topCards = [
+  // ORIGINAL 6
+  { img: 'https://i.pinimg.com/474x/af/22/2c/af222cef9b3b24882570bdd30882ec60.jpg', title: 'Global Cyber League' },
+  { img: 'https://i.pinimg.com/736x/a8/4a/38/a84a3835cd7d65bcbc094ea93ff07efa.jpg', title: 'Neon Samurai Showdown' },
+  { img: 'https://thumbs.dreamstime.com/b/valerie-cyberpunk-vertical-k-valerie-cyberpunk-neon-vertical-k-mobile-wallpaper-320503484.jpg', title: 'Metroplex Battle Royale' },
+  { img: 'https://img.freepik.com/premium-photo/abstract-cyberpunk-technology-gaming-neon-theme-background-mobile-vertical-wallpaper-ai-generated-image_1087980-5678.jpg?w=360', title: 'Quantum Card Clash' },
+  { img: 'https://cdn.displate.com/artwork/270x380/2023-09-07/a8ac9f77d879b280ce857942b3de6001_52a705cdc4c83f2f24fae30de73238d4.jpg', title: 'Chrome Circuit Rivals' },
+  { img: 'https://thumbs.dreamstime.com/b/valerie-cyberpunk-vertical-k-neon-mobile-wallpaper-320503609.jpg', title: 'Digital Dojo Masters' },
+  { img: 'https://upload.wikimedia.org/wikipedia/en/3/36/Evo_Championship_Series_Logo.png', title: 'EVO Championship Series' },
+  { img: 'https://upload.wikimedia.org/wikipedia/en/9/99/The_International_logo.png', title: 'The International' },
+  { img: 'https://images.fandango.com/ImageRenderer/820/0/redesign/static/img/default_poster.png/0/images/masterrepository/fandango/229496/2022_09_26LeagueofLegends_w22-eventcinema-theatricalposter-27x40.jpg', title: 'League of Legends Worlds' },
+  { img: 'https://static0.gamerantimages.com/wordpress/wp-content/uploads/wm/2023/05/mlg-major-championship-columbus-2016_done.jpg?q=50&fit=crop&w=825&dpr=1.5', title: 'CS:GO Major' },
+  { img: 'https://cdn2.unrealengine.com/Fortnite+Esports%2Fblog%2Ffortnite-world-cup-details%2FFN_Competitive_Social_FWC_Announce-1920x1080-ec4306cddd1e003944a63e282359d29b86bb52b6.jpg', title: 'Fortnite World Cup' },
+  { img: 'https://upload.wikimedia.org/wikipedia/en/1/1b/OWL_2021_Grand_Finals_logo.png', title: 'Overwatch League Grand Finals' },
+  { img: 'https://art4fans.com/cdn/shop/files/six-invitational-kali-rainbow-six-art-614051.jpg?v=1741799905', title: 'Rainbow Six Siege Invitational' },
+  { img: 'https://www.dexerto.com/cdn-image/wp-content/uploads/2025/06/17/cdl-championship-weekend-2025.jpg?width=1200&quality=60&format=auto', title: 'Call of Duty League' },
+  { img: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Valorant_Champions_Tour_logo.png', title: 'Valorant Champions' },
+  { img: 'https://static.wikia.nocookie.net/fifa_esports_gamepedia_en/images/e/e8/FIFA_eWorld_Cup_2019_logo.png/revision/latest/scale-to-width-down/220?cb=20190729231148', title: 'FIFA eWorld Cup' },
+  { img: 'https://cdn.myportfolio.com/c7158298-6750-4af5-82af-29d651410e30/84cd25a9-ae29-42b9-8951-26bc98d37bce_rw_1920.png?h=dee5371f6652b4f86d3469b78adb5c78', title: 'Rocket League Championship' },
+  { img: 'https://assets-prd.ignimgs.com/2022/12/16/smashworldtour-blogroll-02-1671212747188.jpeg', title: 'Smash World Tour' },
+  { img: 'https://wstatic-prod-boc.krafton.com/common/news/20241202/3kv4SK1g.jpg', title: 'PUBG Global Championship' },
+  { img: 'https://mlpnk72yciwc.i.optimole.com/cqhiHLc.IIZS~2ef73/w:auto/h:auto/q:75/https://bleedingcool.com/wp-content/uploads/2024/05/Apex-Legends-Global-Series-Logo-Artwork.jpg', title: 'Apex Legends Global Series' },
+  { img: 'https://static.wikia.nocookie.net/halo/images/1/1e/HCSLogo.png/revision/latest?cb=20150509025624', title: 'Halo Championship Series' },
+  { img: 'https://images2.minutemediacdn.com/image/upload/c_crop,w_1279,h_719,x_0,y_0/c_fill,w_1200,ar_4:3,f_auto,q_auto,g_auto/images/voltaxMediaLibrary/mmsport/esports_illustrated/01jks8x7jvva9hwhvj9s.png', title: 'Street Fighter Capcom Cup' },
+  { img: 'https://cdn.escharts.com/media/quick-upload/2023/02/pasted%20image%200-ec97d6322d090b0be40735c129501e96.png?width=&height=', title: 'Tekken World Tour' },
+  { img: 'https://i.ebayimg.com/images/g/lp0AAOSwsRNl77xu/s-l1200.jpg', title: 'Magic: The Gathering Pro Tour' },
+
+];
+
+    const topCarousel = document.getElementById('top-carousel');
+  let currentIndex = 0;
+
+  // Fetch Tournaments from PandaScore
+  async function fetchTournaments() {
+    try {
+      const response = await fetch(`https://api.pandascore.co/v3/tournaments/upcoming?token=${PANDASCORE_TOKEN}`);
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+      const data = await response.json();
+      console.log('Tournaments:', data); // Debug: Check real data
+      return data.slice(0, 10).map(t => ({
+        id: t.id,
+        img: t.image_url || 'https://via.placeholder.com/200x150?text=Tournament',
+        title: `${t.name} (${t.videogame?.name || 'Esports'})`
+      }));
+    } catch (err) {
+      console.error('PandaScore error:', err);
+      alert('Using static tournaments—check console.');
+      return topCards; // Fallback to static array
+    }
+  }
+
+    function updateCarouselPosition() {
+      const cardWidth = 200;
+      const offset = -(currentIndex * cardWidth) + ((window.innerWidth - 180) / 2 - cardWidth);
+      topCarousel.style.transform = `translateX(${offset}px)`;
+      Array.from(topCarousel.children).forEach((card, i) => {
+        card.classList.remove('center');
+        if (i === currentIndex) {
+          card.classList.add('center');
+        }
+      });
+    }
+
+    function moveTopCarousel(dir) {
+      currentIndex += dir;
+      if (currentIndex < 0) currentIndex = topCards.length - 1;
+      if (currentIndex >= topCards.length) currentIndex = 0;
+      updateCarouselPosition();
+    }
+
+    renderTopCarousel();
+    window.addEventListener('resize', updateCarouselPosition);
+
+    // Match Requests Data
+    const matches = [
+      {
+        img: "https://www.shutterstock.com/image-vector/gamer-anime-boy-playing-on-600nw-1828930421.jpg",
+        title: "Capture the Flag",
+        desc: "Squad needed for CTF.",
+        details: "K/D 1.9 • 6700XP",
+      },
+      {
+        img: "https://i.etsystatic.com/44421772/r/il/c964ba/6205632549/il_fullxfull.6205632549_2p8e.jpg",
+        title: "Battle Royale",
+        desc: "Battling for Platinum Tier.",
+        details: "K/D 4.0 • 10120XP",
+      },
+      {
+        img: "https://play-lh.googleusercontent.com/Dj7cruHjT5ejOFrF5HcW2Ryo-n79imSBbUf2OVfrZkUII1httatA30zl5-x8JSBdLzG-",
+        title: "1v1 Arena",
+        desc: "Solo Ranked Challenge!",
+        details: "K/D 3.1 • 7500XP",
+      },
+      {
+        img: "https://play-lh.googleusercontent.com/yVObWmhZFMYi_KF9Wb4Z560ussu5lS6Ad96hoSIk8NTfcewZTNWUmCWU4fjutSuGlWQk",
+        title: "Deathmatch",
+        desc: "New Team Deathmatch Request!",
+        details: "K/D 2.2 • 8900XP",
+      },
+      {
+        img: "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/3f/c8/01/3fc8018f-36cf-d54a-91ec-6001408b26c8/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/1200x600wa.png",
+        title: "Squad Skirmish",
+        desc: "Hardcore team match.",
+        details: "K/D 2.5 • 8200XP",
+      }
+    ];
+
+    const matchCarousel = document.getElementById('match-carousel');
+    matches.forEach((m) => {
+      const card = document.createElement('div');
+      card.className = 'match-card';
+      card.innerHTML = `
+        <img src="${m.img}" alt="game card"/>
+        <div class="match-title">${m.title}</div>
+        <div class="match-desc">${m.desc}</div>
+        <div class="match-details">${m.details}</div>
+        <button class="accept-btn">Accept</button>
+        <button class="decline-btn">Decline</button>
+      `;
+      matchCarousel.appendChild(card);
+    });
+
+    function moveMatchCarousel(dir) {
+      const scrollAmount = 270;
+      matchCarousel.scrollBy({ left: dir * scrollAmount, behavior: 'smooth' });
+    }
+
+    // Games Data
+    const gamesData = [
+  // ORIGINAL GAMES
+  { img: 'https://cdn.mos.cms.futurecdn.net/JhNtmh6bDM6F9LXiAWSLUQ.jpg', title: 'Reaver' },
+  { img: 'https://www.gameart2d.com/uploads/3/0/9/1/30917885/sci-fi-tcg-template-4_orig.png', title: 'Sci-Fi TCG' },
+  { img: 'https://i.etsystatic.com/54229888/r/il/d60743/6214731330/il_570xN.6214731330_799q.jpg', title: 'Futuristic Card' },
+  { img: 'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000082492/775d29e8e95d84b2890eda7958a2367fd56d6ffcfee95a5227ade62fde8989ec', title: 'Metroplex Zero' },
+  { img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1533420/capsule_616x353.jpg?t=1729099604', title: 'Neon White' },
+  { img: 'https://m.media-amazon.com/images/I/71RvmdQgIFL.jpg', title: 'Cyberpunk RED' },
+  { img: 'https://4kwallpapers.com/images/wallpapers/motorcycle-cyberpunk-2077-neon-art-neon-lights-triangles-4200x3000-7289.jpg', title: 'Cyber Bike' },
+  { img: 'https://i.pinimg.com/736x/a8/4a/38/a84a3835cd7d65bcbc094ea93ff07efa.jpg', title: 'Samurai' },
+
+  // NEW REAL GAMES ADDED
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2glr.jpg', title: 'The Legend of Zelda: Breath of the Wild' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1t1c.jpg', title: 'Super Mario Odyssey' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2c9z.jpg', title: 'God of War (2018)' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2i7h.jpg', title: 'Animal Crossing: New Horizons' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co21wk.jpg', title: 'Among Us' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2c9u.jpg', title: 'Hades' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1v7z.jpg', title: 'Celeste' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2i7g.jpg', title: 'DOOM Eternal' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1th4.jpg', title: 'Stardew Valley' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6g4v.jpg', title: 'Overwatch 2' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co5g5p.jpg', title: 'Elden Ring' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co4m2e.jpg', title: 'It Takes Two' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1t7s.jpg', title: 'The Witcher 3: Wild Hunt' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1th3.jpg', title: 'Fortnite' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1th2.jpg', title: 'Minecraft' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2c9y.jpg', title: 'Red Dead Redemption 2' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1th1.jpg', title: 'Portal 2' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2c9x.jpg', title: 'Cuphead' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2i7f.jpg', title: 'Genshin Impact' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2c9w.jpg', title: 'Hollow Knight' },
+  
+  // 2023 RELEASES
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2r.jpg', title: 'Baldur\'s Gate 3' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2q.jpg', title: 'Street Fighter 6' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2p.jpg', title: 'Alan Wake 2' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2o.jpg', title: 'Spider-Man 2' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2n.jpg', title: 'Resident Evil 4 Remake' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2m.jpg', title: 'Diablo IV' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2l.jpg', title: 'Final Fantasy XVI' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2k.jpg', title: 'Hogwarts Legacy' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2j.jpg', title: 'Starfield' },
+  { img: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6k2i.jpg', title: 'Super Mario Bros. Wonder' }
+];
+
+    const gamesSection = document.querySelector('.games');
+    gamesData.forEach((g, i) => {
+      const layer = document.createElement('div');
+      layer.className = 'card-animation-layer';
+      layer.onclick = () => showGameDetails(g.title);
+      const card = document.createElement('div');
+      card.className = 'game-card';
+      card.innerHTML = `
+        <img src="${g.img}" alt="game">
+        <div class="game-title">${g.title}</div>
+      `;
+      layer.appendChild(card);
+      gamesSection.appendChild(layer);
+    });
+
+    function showGameDetails(title) {
+      alert(`Game Details for ${title}: Description, Mates, etc.`);
+    }
+
+    // Feed Posts Data
+    let feedPostsData = [
+      {
+        avatar: 'https://i.pinimg.com/736x/61/23/55/612355261acbdcbdf1371dd029d51856.jpg',
+        title: 'III',
+        game: 'League of Legends &#128293; 1v1',
+        desc: 'Looking for Teammates',
+        meta: '6 days ago &#8226; NA Central',
+        content: 'kkkkkmmmmmmmmmmmmmmmmm',
+        tag: 'teammates'
+      },
+      {
+        avatar: 'https://i.pinimg.com/236x/dd/b7/b5/ddb7b5437db1cff0d0ef0acb390b04ca.jpg',
+        title: 'Vvv',
+        game: 'Valorant &#128293; 1v1',
+        desc: 'Challenge',
+        meta: '7 days ago &#8226; Asia',
+        content: '...............',
+        tag: 'challenge'
+      },
+      {
+        avatar: 'https://files.idyllic.app/files/static/3955890',
+        title: 'GamerPro',
+        game: 'Fortnite &#128293; Squad',
+        desc: 'Squad',
+        meta: '2 days ago &#8226; EU West',
+        content: 'Need good players for ranked!',
+        tag: 'squad'
+      },
+      {
+        avatar: 'https://wallpapers.com/images/hd/gaming-profile-pictures-tmjjc9v0w80azoeh.jpg',
+        title: 'Hero',
+        game: 'Dota 2 &#128293; Team',
+        desc: 'Looking for Teammates',
+        meta: '1 day ago &#8226; Global',
+        content: 'Join my team!',
+        tag: 'teammates'
+      },
+    ];
+
+    const feedPosts = document.getElementById('feed-posts');
+    function renderFeedPosts(filter = 'all') {
+      feedPosts.innerHTML = '';
+      feedPostsData.filter(p => filter === 'all' || p.tag === filter).forEach((p, index) => {
+        const post = document.createElement('div');
+        post.className = 'feed-post';
+        post.dataset.index = index;
+        post.innerHTML = `
+          <div class="feed-post-header">
+            <img class="feed-post-avatar" src="${p.avatar}" alt="${p.title}">
+            <div class="feed-post-info">
+              <div class="feed-post-title">${p.title}</div>
+              <div class="feed-post-game">${p.game}</div>
+            </div>
+            <span class="feed-post-tag">${p.desc}</span>
+          </div>
+          <div class="feed-post-content">${p.content}</div>
+          <div class="feed-post-meta">${p.meta}</div>
+          <div class="feed-post-actions">
+            <button class="apply-btn" onclick="applyToMatch(${index})">Apply to Match</button>
+            <button class="pass-btn" onclick="passMatch(${index})">Pass</button>
+          </div>
+        `;
+        feedPosts.appendChild(post);
+      });
+    }
+
+    renderFeedPosts();
+
+    function filterFeed(tag) {
+      const filterButtons = document.querySelectorAll('.filters button');
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      const activeBtn = Array.from(filterButtons).find(btn => btn.textContent.toLowerCase().includes(tag) || (tag === 'all' && btn.textContent === 'All'));
+      if (activeBtn) activeBtn.classList.add('active');
+      renderFeedPosts(tag);
+    }
+
+    function randomPairing() {
+      const randomIndex = Math.floor(Math.random() * feedPostsData.length);
+      const paired = feedPostsData[randomIndex];
+      alert(`Paired randomly with: ${paired.title} in ${paired.game}! Starting match...`);
+    }
+
+    function findRandomPair(section) {
+      const gameSelect = document.getElementById(`game-select-${section}`);
+      const skillSelect = document.getElementById(`skill-select-${section}`);
+      const game = gameSelect.value;
+      const skill = skillSelect.value;
+      if (game !== 'Select Game' && skill !== 'Select Skill Level') {
+        alert(`Found random pair for ${game} at ${skill} level!`);
+      } else {
+        alert('Please select game and skill level.');
+      }
+    }
+
+    // Connections Data
+    let connectionsData = [
+      { img: 'https://wallpapers.com/images/hd/gaming-profile-pictures-sip74wt5su5vkzgd.jpg', name: 'Alice', status: 'Online' },
+      { img: 'https://media.craiyon.com/2025-07-12/M81gqAv9Ra6wvvTNZeM1sQ.webp', name: 'Bob', status: 'Offline' },
+      { img: 'https://i.pinimg.com/736x/61/23/55/612355261acbdcbdf1371dd029d51856.jpg', name: 'Charlie', status: 'In Game' },
+      { img: 'https://i.pinimg.com/236x/dd/b7/b5/ddb7b5437db1cff0d0ef0acb390b04ca.jpg', name: 'Dana', status: 'Online' },
+      { img: 'https://files.idyllic.app/files/static/3955890', name: 'Eve', status: 'Offline' },
+    ];
+
+    const connectionsList = document.querySelector('.connections-list');
+    function renderConnections() {
+      connectionsList.innerHTML = '';
+      connectionsData.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'connection-card';
+        card.dataset.name = c.name;
+        card.innerHTML = `
+          <img class="connection-avatar" src="${c.img}" alt="${c.name}">
+          <div class="connection-name">${c.name}</div>
+          <div class="connection-status">${c.status}</div>
+          <div class="connection-actions">
+            <button onclick="openComposeModal('${c.name}')">Message</button>
+            <button onclick="removeConnection('${c.name}')">Remove</button>
+          </div>
+        `;
+        connectionsList.appendChild(card);
+      });
+    }
+    renderConnections();
+
+    function removeConnection(name) {
+      const index = connectionsData.findIndex(c => c.name === name);
+      if (index > -1) {
+        connectionsData.splice(index, 1);
+        renderConnections();
+        alert(`Removed ${name} from connections.`);
+      }
+    }
+
+    // Messages Data
+    const messagesData = [
+      { img: 'https://wallpapers.com/images/hd/gaming-profile-pictures-sip74wt5su5vkzgd.jpg', sender: 'Alice', time: '5 min ago', content: 'Hey, want to team up for the tournament?' },
+      { img: 'https://media.craiyon.com/2025-07-12/M81gqAv9Ra6wvvTNZeM1sQ.webp', sender: 'Bob', time: '1 hour ago', content: 'GG on the last match!' },
+      { img: 'https://i.pinimg.com/736x/61/23/55/612355261acbdcbdf1371dd029d51856.jpg', sender: 'Charlie', time: 'Yesterday', content: 'Check out this new game mode.' },
+      { img: 'https://i.pinimg.com/236x/dd/b7/b5/ddb7b5437db1cff0d0ef0acb390b04ca.jpg', sender: 'Dana', time: '2 hours ago', content: 'Ready for the next challenge?' },
+    ];
+
+    const messagesList = document.querySelector('.messages-list');
+    messagesData.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'message-card';
+      card.innerHTML = `
+        <div class="message-header">
+          <img class="message-avatar" src="${m.img}" alt="${m.sender}">
+          <div class="message-info">
+            <div class="message-sender">${m.sender}</div>
+          </div>
+          <div class="message-time">${m.time}</div>
+        </div>
+        <div class="message-content">${m.content}</div>
+        <button class="reply-btn" onclick="openComposeModal('${m.sender}')">Reply</button>
+      `;
+      messagesList.appendChild(card);
+    });
+
+    // Settings Functions
+    function toggleDarkMode() {
+      alert('Toggling Dark Mode...');
+    }
+
+    function toggleNotifications() {
+      alert('Toggling Notifications...');
+    }
+
+    function togglePrivacy() {
+      alert('Toggling Privacy...');
+    }
+
+    // PLAYER PROFILE MODAL FUNCTIONS
+    function openPlayerProfile(gamertag, displayName, avatarUrl) {
+      const modal = document.getElementById('playerProfileModal');
+      const content = document.getElementById('playerProfileContent');
+      
+      content.innerHTML = `
+        <div class="profile-modal-stats">
+          <img src="${avatarUrl}" alt="${displayName}">
+          <h2>${displayName}</h2>
+          <h3>Player Stats</h3>
+          <div class="stat">Rank: <strong>#${Math.floor(Math.random() * 100) + 1}</strong></div>
+          <div class="stat">Wins: <strong>${Math.floor(Math.random() * 100) + 20}</strong></div>
+          <div class="stat">K/D: <strong>${(Math.random() * 3 + 1).toFixed(1)}</strong></div>
+          <div class="stat">XP: <strong>${Math.floor(Math.random() * 15000) + 5000}</strong></div>
+          <div class="stat">Games Played: <strong>${Math.floor(Math.random() * 500) + 100}</strong></div>
+        </div>
+
+        <div class="profile-modal-match-requests">
+          <h3>Recent Match Requests</h3>
+          <div class="profile-modal-challenge">
+            <strong>Team Deathmatch Challenge</strong><br><br>
+            Looking for skilled players for ranked TDM. Must have 2.0+ K/D and good comms. 
+            Tournament prep - serious players only!
+          </div>
+          <div class="profile-modal-buttons">
+            <button class="profile-modal-btn accept" onclick="alert('Challenge Accepted!')">Accept Challenge</button>
+            <button class="profile-modal-btn decline" onclick="alert('Challenge Declined')">Decline</button>
+          </div>
+        </div>
+
+        <div class="profile-modal-card-tiers">
+          <h3>Card Collection</h3>
+          <div class="profile-modal-tier-item">Bronze: <strong>18/20</strong></div>
+          <div class="profile-modal-tier-item">Silver: <strong>12/15</strong></div>
+          <div class="profile-modal-tier-item">Gold: <strong>8/10</strong></div>
+          <div class="profile-modal-tier-item">Platinum: <strong>3/8</strong></div>
+        </div>
+
+        <div class="profile-modal-about">
+          <h3>About ${gamertag}</h3>
+          <p><strong>Location:</strong> Seattle, WA</p>
+          <p><strong>Bio:</strong> Competitive MOBA player with 5+ years experience. Tournament organizer and analyst.</p>
+          <p><strong>Playstyle:</strong> Strategic, team-focused</p>
+          <p><strong>Availability:</strong> Weekends & Evenings</p>
+          <h4>Favorite Games:</h4>
+          <div class="profile-modal-games">
+            <span class="profile-modal-game-tag">Dota 2</span>
+            <span class="profile-modal-game-tag">League of Legends</span>
+            <span class="profile-modal-game-tag">Heroes of the Storm</span>
+          </div>
+          <div class="profile-modal-buttons" style="justify-content: center; margin-top: 20px;">
+            <button class="profile-modal-btn message" onclick="openComposeModal('${gamertag}')">Send Message</button>
+            <button class="profile-modal-btn accept" onclick="alert('Added to Friends!')">Add Friend</button>
+          </div>
+        </div>
+      `;
+      
+      modal.style.display = 'block';
+    }
+
+    function closePlayerProfileModal() {
+      document.getElementById('playerProfileModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const playerModal = document.getElementById('playerProfileModal');
+      if (event.target == playerModal) {
+        closePlayerProfileModal();
+      }
+    }
+
+    // View Profile (OLD FUNCTION - NOW REPLACED)
+    function viewProfile(name) {
+      alert(`Viewing profile of ${name}...`);
+    }
+
+    // Additional Functions
+    function openCreateModal() {
+      document.getElementById('createPostModal').style.display = 'block';
+    }
+
+    function closeCreateModal() {
+      document.getElementById('createPostModal').style.display = 'none';
+    }
+
+    document.getElementById('createPostForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const game = document.getElementById('game').value;
+      const gameMode = document.getElementById('game-mode').value;
+      const region = document.getElementById('region').value;
+      const tournament = document.getElementById('tournament').value;
+      const description = document.getElementById('description').value;
+
+      // Simulate adding to feed
+      feedPostsData.push({
+        avatar: document.getElementById('profile-pic').src,
+        title: document.getElementById('profile-name').textContent,
+        game: `${game} &#128293; ${gameMode}`,
+        desc: tournament || 'No Tournament',
+        meta: `Just now • ${region}`,
+        content: description,
+        tag: 'request'
+      });
+      renderFeedPosts();
+      closeCreateModal();
+      alert('Match Request Created!');
+    });
+
+    let isHidden = false;
+    function toggleHide() {
+      isHidden = !isHidden;
+      feedPosts.style.display = isHidden ? 'none' : 'block';
+    }
+
+    function refreshFeed() {
+      renderFeedPosts();
+    }
+
+    function applyToMatch(index) {
+      alert(`Applied to match: ${feedPostsData[index].title}`);
+    }
+
+    function passMatch(index) {
+      alert(`Passed match: ${feedPostsData[index].title}`);
+      feedPostsData.splice(index, 1);
+      renderFeedPosts();
+    }
+
+    function searchFeed(value) {
+      const lowerValue = value.toLowerCase();
+      const posts = document.querySelectorAll('.feed-post');
+      posts.forEach(post => {
+        const title = post.querySelector('.feed-post-title').textContent.toLowerCase();
+        const desc = post.querySelector('.feed-post-content').textContent.toLowerCase();
+        post.style.display = title.includes(lowerValue) || desc.includes(lowerValue) ? 'block' : 'none';
+      });
+    }
+
+    function searchPlayers(value) {
+      const lowerValue = value.toLowerCase();
+      const cards = document.querySelectorAll('.player-card');
+      cards.forEach(card => {
+        const name = card.querySelector('.player-name').textContent.toLowerCase();
+        card.style.display = name.includes(lowerValue) ? 'block' : 'none';
+      });
+    }
+
+    // Compose Message Modal Functions
+    function openComposeModal(recipient) {
+      document.getElementById('composeMessageModal').style.display = 'block';
+      document.getElementById('recipient').value = recipient;
+      document.getElementById('message').value = '';
+    }
+
+    function closeComposeModal() {
+      document.getElementById('composeMessageModal').style.display = 'none';
+    }
+
+    document.getElementById('composeMessageForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const recipient = document.getElementById('recipient').value;
+      const message = document.getElementById('message').value;
+      alert(`Message sent to ${recipient}: ${message}`);
+      closeComposeModal();
+    });
+
+    // Edit Profile Modal Functions
+    function openEditProfileModal() {
+      document.getElementById('editProfileModal').style.display = 'block';
+      document.getElementById('name').value = document.getElementById('profile-name').textContent;
+      document.getElementById('pic-url').value = document.getElementById('profile-pic').src;
+    }
+
+    function closeEditProfileModal() {
+      document.getElementById('editProfileModal').style.display = 'none';
+    }
+
+    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newName = document.getElementById('name').value;
+      const newPic = document.getElementById('pic-url').value;
+      document.getElementById('profile-name').textContent = newName;
+      document.getElementById('profile-pic').src = newPic;
+      closeEditProfileModal();
+    });
+  </script>
+</body>
+</html>
